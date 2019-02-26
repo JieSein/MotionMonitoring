@@ -4,7 +4,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#e1ded7">
+    android:background="#e1ded7" >
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -12,17 +12,17 @@
         android:background="#54c6f7">
 
         <TextView
-            android:id="@+id/login_title"
+            android:id="@+id/register_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="登录账号"
+            android:text="注册账号"
             android:textColor="#fff"
             android:textSize="20dp"
             android:layout_centerInParent="true"/>
     </RelativeLayout>
 
     <EditText
-        android:id="@+id/username_login_edit_text"
+        android:id="@+id/username_register_edit_text"
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:layout_marginTop="10dp"
@@ -30,40 +30,43 @@
         android:hint="账号" />
 
     <EditText
-        android:id="@+id/password_login_edit_text"
+        android:id="@+id/password_register_edit_text"
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:layout_marginTop="1dp"
         android:background="#fff"
         android:hint="密码" />
 
+    <EditText
+        android:id="@+id/password_sure_register_edit_text"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginTop="1dp"
+        android:background="#fff"
+        android:hint="确认密码" />
+
     <Button
-        android:id="@+id/login_button"
+        android:id="@+id/register_button"
         android:layout_width="380dp"
         android:layout_height="40dp"
         android:layout_marginTop="15dp"
         android:layout_gravity="center"
         android:background="#49b5ea"
-        android:text="登录"
+        android:text="注册"
         android:textColor="#fff"
         android:textSize="20dp"/>
 
     <TextView
-        android:id="@+id/register_in_button"
+        android:id="@+id/login_in_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:layout_marginRight="15dp"
-        android:text="新用户注册"
+        android:text="登录"
         android:textColor="#41b0e7"
         android:textSize="15dp"
         android:textColorLink="#8EC9E5"
         android:layout_gravity="right"/>
 
-    <Button
-        android:id="@+id/select_test"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="查询测试"/>
 
 </LinearLayout>

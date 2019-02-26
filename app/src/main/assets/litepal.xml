@@ -1,0 +1,11 @@
+<litepal>
+
+    <dbname value="motion_monitoring" />
+
+    <version value="1" />
+
+    <list>
+        <mapping class="com.json.motionmonitoring.model.User" />
+    </list>
+
+</litepal>
