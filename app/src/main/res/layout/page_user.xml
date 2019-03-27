@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@+id/ll_user_information"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp">
+
+        <LinearLayout
+            android:id="@+id/user_information_layout"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/none_vertical_border_edittext">
+
+            <TextView
+                android:id="@+id/user_information_text_view"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_gravity="center_vertical"
+                android:gravity="center"
+                android:text="@string/icons_information"
+                android:textSize="33dp"/>
+
+            <TextView
+                android:id="@+id/user_information"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_weight="9"
+                android:paddingLeft="10dp"
+                android:gravity="center_vertical"
+                android:text="个人信息"
+                android:textSize="25dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/device_binding_layout"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/none_vertical_border_edittext">
+
+            <TextView
+                android:id="@+id/device_binding_text_view"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_gravity="center_vertical"
+                android:gravity="center"
+                android:text="@string/icons_device"
+                android:textSize="33dp"/>
+
+            <TextView
+                android:id="@+id/device_binding"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_weight="9"
+                android:paddingLeft="10dp"
+                android:gravity="center_vertical"
+                android:text="设备绑定"
+                android:textSize="25dp"/>
+        </LinearLayout>
+
+    </LinearLayout>
+</RelativeLayout>

@@ -1,3 +1,42 @@
 <resources>
     <string name="app_name">MotionMonitoring</string>
+
+    <string name="icons_information">&#xe613;</string>
+
+    <string name="icons_password">&#xe621;</string>
+
+    <string name="icons_login">&#xe622;</string>
+
+    <string name="icons_register">&#xe71c;</string>
+    
+    <string name="icons_age">&#xe7ba;</string>
+    
+    <string name="icons_height">&#xe7ca;</string>
+    
+    <string name="icons_weight">&#xe7da;</string>
+
+    <string name="icons_step">&#xe657;</string>
+    
+    <string name="icons_phone">&#xe62a;</string>
+
+    <string name="icons_user1">&#xe626;</string>
+
+    <string name="icons_email">&#xe636;</string>
+
+    <string name="icons_device">&#xe64c;</string>
+    
+    <string name="icons_sex">&#xe62d;</string>
+
+    <string name="icons_temp">&#xe635;</string>
+    
+    <string name="icons_heart">&#xe666;</string>
+
+    <string name="icons_user2">&#xe6c1;</string>
+    
+    <string name="icons_pwd_display">&#xe6b3;</string>
+
+    <string name="icons_pwd_hide">&#xe624;</string>
+
+    <string name="icons_return">&#xe6ff;</string>
+
 </resources>

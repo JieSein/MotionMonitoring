@@ -6,6 +6,7 @@
 
     <list>
         <mapping class="com.json.motionmonitoring.model.User" />
+        <mapping class="com.json.motionmonitoring.model.Device" />
     </list>
 
 </litepal>

@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#ddf7f4f4">
+
+    <LinearLayout
+        android:id="@+id/ll_step"
+        android:orientation="vertical"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:padding="5dp"
+        android:layout_gravity="center_vertical">
+
+        <TextView
+            android:id="@+id/step_text_view"
+            android:layout_width="30dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/icons_step"
+            android:textSize="30dp"
+            android:textColor="@android:color/tab_indicator_text"/>
+
+        <TextView
+            android:id="@+id/tv_step"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="步数"
+            android:textColor="@android:color/tab_indicator_text"
+            android:textStyle="bold"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_temp"
+        android:orientation="vertical"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:padding="5dp"
+        android:gravity="center"
+        android:layout_gravity="center_vertical">
+
+        <TextView
+            android:id="@+id/temp_text_view"
+            android:layout_width="30dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/icons_temp"
+            android:textSize="30dp"
+            android:textColor="@android:color/tab_indicator_text"/>
+
+        <TextView
+            android:id="@+id/tv_temp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="体温"
+            android:textColor="@android:color/tab_indicator_text"
+            android:textStyle="bold"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_heart"
+        android:orientation="vertical"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:padding="5dp"
+        android:gravity="center"
+        android:layout_gravity="center_vertical">
+
+        <TextView
+            android:id="@+id/heart_text_view"
+            android:layout_width="30dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/icons_heart"
+            android:textSize="30dp"
+            android:textColor="@android:color/tab_indicator_text"/>
+
+        <TextView
+            android:id="@+id/tv_heart"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="心率"
+            android:textColor="@android:color/tab_indicator_text"
+            android:textStyle="bold"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_user"
+        android:orientation="vertical"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:padding="5dp"
+        android:gravity="center"
+        android:layout_gravity="center_vertical">
+
+        <TextView
+            android:id="@+id/user_text_view"
+            android:layout_width="30dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/icons_user2"
+            android:textSize="30dp"
+            android:textColor="@android:color/tab_indicator_text"/>
+
+        <TextView
+            android:id="@+id/tv_user"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="我"
+            android:textColor="@android:color/tab_indicator_text"
+            android:textStyle="bold"/>
+    </LinearLayout>
+</LinearLayout>
