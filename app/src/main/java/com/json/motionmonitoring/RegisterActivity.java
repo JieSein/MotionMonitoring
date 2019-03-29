@@ -18,7 +18,12 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.json.motionmonitoring.model.User;
+import com.json.motionmonitoring.util.EdittextContent;
 import com.json.motionmonitoring.util.Validator;
+
+import org.litepal.crud.DataSupport;
+
+import java.util.List;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -169,16 +174,16 @@ public class RegisterActivity extends AppCompatActivity {
                 if (TextUtils.isEmpty(usernameText)){
                     Toast.makeText(RegisterActivity.this, "请输入用户名：", Toast.LENGTH_SHORT).show();
                     return;
-                } else if (Validator.verifyEmail(usernameEdit.getText().toString().trim()) == false) {
-                    Toast.makeText(RegisterActivity.this, "用户名格式错误", Toast.LENGTH_SHORT).show();
+                } else if (selectUserByName(EdittextContent.getEditString(usernameEdit)) == true) {
+                    Toast.makeText(RegisterActivity.this, "该账号已被注册", Toast.LENGTH_SHORT).show();
                     return;
-                }else if (TextUtils.isEmpty(passwordText)){
+                } else if (TextUtils.isEmpty(passwordText)){
                     Toast.makeText(RegisterActivity.this, "请输入密码：", Toast.LENGTH_SHORT).show();
                     return;
                 } else if (Validator.verifyPassword(passwordEdit.getText().toString().trim()) == false) {
                     Toast.makeText(RegisterActivity.this, "请输入6到20位的数字或字母", Toast.LENGTH_SHORT).show();
                     return;
-                }else if (TextUtils.isEmpty(passwordSureText)){
+                } else if (TextUtils.isEmpty(passwordSureText)){
                     Toast.makeText(RegisterActivity.this, "请确认密码：", Toast.LENGTH_SHORT).show();
                     return;
                 } else if (!passwordSureEdit.getText().toString().trim().equals(passwordEdit.getText().toString().trim())){
@@ -200,6 +205,22 @@ public class RegisterActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    private boolean selectUserByName(String username){
+        List<User> users = DataSupport.where("user_name = ?", username).find(User.class);
+        for (User user : users){
+            if (user != null){
+                if (EdittextContent.getEditString(usernameEdit).equals(user.getUser_name())){
+                    return true;
+                } else {
+                    return false;
+                }
+            } else {
+                return false;
+            }
+        }
+        return false;
     }
 
     private void getEditString(){

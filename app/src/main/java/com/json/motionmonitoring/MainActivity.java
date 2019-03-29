@@ -20,6 +20,7 @@ import android.widget.ToggleButton;
 
 import com.json.motionmonitoring.model.Device;
 import com.json.motionmonitoring.model.User;
+import com.json.motionmonitoring.util.EdittextContent;
 
 import org.litepal.LitePal;
 import org.litepal.crud.DataSupport;
@@ -175,21 +176,27 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(MainActivity.this, "请输入密码!", Toast.LENGTH_SHORT).show();
                 }
 
+                Log.d("MainActivity", "****账号" + EdittextContent.getEditString(usernameEdit));
+                Log.d("MainActivity", "****密码" + EdittextContent.getEditString(passwordEdit));
                 List<User> users = DataSupport.where("user_name = ? and password = ?",
-                        usernameText, passwordText).find(User.class);
-                for (User user : users){
-                    if (user.getUser_name().toString().equals(usernameText)){
-                        if (user.getPassword().toString().equals(passwordText)){
-                            Toast.makeText(MainActivity.this, "登录成功", Toast.LENGTH_SHORT).show();
-                            returnHomeActivity();
+                        EdittextContent.getEditString(usernameEdit), EdittextContent.getEditString(passwordEdit)).find(User.class);
+                for (User user : users) {
+                    if (user != null) {
+                        if (user.getUser_name().toString().equals(usernameText)) {
+                            if (user.getPassword().toString().equals(passwordText)) {
+                                Toast.makeText(MainActivity.this, "登录成功", Toast.LENGTH_SHORT).show();
+                                returnHomeActivity();
+                            } else {
+                                Log.d("MainActivity", "密码错误" + user.getPassword());
+                                Toast.makeText(MainActivity.this, "密码错误", Toast.LENGTH_SHORT).show();
+                                break;
+                            }
                         } else {
-                            Log.d("MainActivity", "密码错误"+user.getUser_name());
-                            Toast.makeText(MainActivity.this, "密码错误", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(MainActivity.this, "账号错误", Toast.LENGTH_SHORT).show();
                             break;
                         }
                     } else {
-                        Toast.makeText(MainActivity.this, "账号错误", Toast.LENGTH_SHORT).show();
-                        break;
+                        Log.d("MainActivity", "该账号未注册");
                     }
                 }
             }

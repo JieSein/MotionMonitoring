@@ -16,12 +16,7 @@ public class Validator {
     /**
      * 手机号码格式：长度为11，且只包含数字，以1开头
      */
-    private static final String REGEX_PHONE = "^1([38][0-9]|4[579]|5[0-3,5-9]|6[6]|7[0135678]|9[89])\\d{8}$";
-
-    /**
-     * 数字验证：只为数字
-     */
-    private static final String REGEX_NUMBER = "^[0-9]$";
+    private static final String REGEX_PHONE = "/^[1][3,4,5,7,8][0-9]{9}$/";
 
     /**
      * 验证邮箱
@@ -50,13 +45,5 @@ public class Validator {
         return Pattern.matches(REGEX_PHONE, phone);
     }
 
-    /**
-     * 验证数字格式
-     * @param number
-     * @return
-     */
-    public static boolean verifyNumber(String number){
-        return Pattern.matches(REGEX_NUMBER, number);
-    }
 
 }

@@ -13,6 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.json.motionmonitoring.model.User;
+import com.json.motionmonitoring.util.EdittextContent;
 import com.json.motionmonitoring.util.Validator;
 
 import org.litepal.crud.DataSupport;
@@ -232,24 +233,26 @@ public class UserInformation extends AppCompatActivity implements View.OnFocusCh
             public void onClick(View v) {
                 getEditString();
                 ContentValues values = new ContentValues();
-                values.put("e_mail", emailEdit.getText().toString().trim());
-                values.put("phone", phoneEdit.getText().toString().trim());
+                if (Validator.verifyEmail(EdittextContent.getEditString(emailEdit)) == false){
+                    Toast.makeText(UserInformation.this, "请输入正确的邮箱格式", Toast.LENGTH_SHORT).show();
+                    return;
+                } else {
+                    values.put("e_mail", emailEdit.getText().toString().trim());
+                }
+                if (Validator.verifyPhone(EdittextContent.getEditString(phoneEdit)) == false){
+                    Toast.makeText(UserInformation.this, "手机号码格式有误", Toast.LENGTH_SHORT).show();
+                    return;
+                } else {
+                    values.put("phone", phoneEdit.getText().toString().trim());
+                }
                 if (sexEdit.getText().toString().trim() == "male"){
                     values.put("sex", 0);
                 } else if (sexEdit.getText().toString().trim() == "female"){
                     values.put("sex", 1);
                 }
                 values.put("age", ageEdit.getText().toString().trim());
-                if (Validator.verifyNumber(heightText) == false){
-                    Toast.makeText(UserInformation.this, "请输入数字", Toast.LENGTH_SHORT).show();
-                } else {
-                    values.put("height", heightEdit.getText().toString().trim());
-                }
-                if (Validator.verifyNumber(weightText) == false){
-                    Toast.makeText(UserInformation.this, "请输入数字", Toast.LENGTH_SHORT).show();
-                } else {
-                    values.put("weight", weightEdit.getText().toString().trim());
-                }
+                values.put("height", heightEdit.getText().toString().trim());
+                values.put("weight", weightEdit.getText().toString().trim());
                 int result = DataSupport.updateAll(User.class, values, "user_name = ?", data);
                 if (result > 0){
                     Log.d("UserInformation", "修改成功");
