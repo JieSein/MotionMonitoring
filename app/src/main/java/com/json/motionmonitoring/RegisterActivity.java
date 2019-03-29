@@ -18,6 +18,7 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.json.motionmonitoring.model.User;
+import com.json.motionmonitoring.util.Validator;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -167,10 +168,22 @@ public class RegisterActivity extends AppCompatActivity {
 
                 if (TextUtils.isEmpty(usernameText)){
                     Toast.makeText(RegisterActivity.this, "请输入用户名：", Toast.LENGTH_SHORT).show();
-                } else if (TextUtils.isEmpty(passwordText)){
+                    return;
+                } else if (Validator.verifyEmail(usernameEdit.getText().toString().trim()) == false) {
+                    Toast.makeText(RegisterActivity.this, "用户名格式错误", Toast.LENGTH_SHORT).show();
+                    return;
+                }else if (TextUtils.isEmpty(passwordText)){
                     Toast.makeText(RegisterActivity.this, "请输入密码：", Toast.LENGTH_SHORT).show();
-                } else if (TextUtils.isEmpty(passwordSureText)){
+                    return;
+                } else if (Validator.verifyPassword(passwordEdit.getText().toString().trim()) == false) {
+                    Toast.makeText(RegisterActivity.this, "请输入6到20位的数字或字母", Toast.LENGTH_SHORT).show();
+                    return;
+                }else if (TextUtils.isEmpty(passwordSureText)){
                     Toast.makeText(RegisterActivity.this, "请确认密码：", Toast.LENGTH_SHORT).show();
+                    return;
+                } else if (!passwordSureEdit.getText().toString().trim().equals(passwordEdit.getText().toString().trim())){
+                    Toast.makeText(RegisterActivity.this, "两次密码不一致", Toast.LENGTH_SHORT).show();
+                    return;
                 }
 
                 User user = new User();

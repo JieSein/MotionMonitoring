@@ -24,7 +24,7 @@ import java.util.List;
 public class DeviceInformation extends AppCompatActivity {
 
     private EditText deviceCodeEdit;
-    private TextView preservationButton;
+    private Button preservationButton;
     private TextView returnButton;
 
     private TextView textview_device_code;
@@ -65,7 +65,7 @@ public class DeviceInformation extends AppCompatActivity {
         returnButton.setTypeface(iconfont);
 
         deviceCodeEdit = (EditText) findViewById(R.id.device_code_edit);
-        preservationButton = (TextView) findViewById(R.id.device_preservation_button);
+        preservationButton = (Button) findViewById(R.id.device_preservation_button);
     }
 
     private void getEditString(){

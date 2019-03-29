@@ -70,5 +70,34 @@
                 android:textSize="25dp"/>
         </LinearLayout>
 
+        <LinearLayout
+            android:id="@+id/alter_password_layout"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/none_vertical_border_edittext">
+
+            <TextView
+                android:id="@+id/alter_password_text_view"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_gravity="center_vertical"
+                android:gravity="center"
+                android:text="@string/icons_password"
+                android:textSize="33dp"/>
+
+            <TextView
+                android:id="@+id/alter_password"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_weight="9"
+                android:paddingLeft="10dp"
+                android:gravity="center_vertical"
+                android:text="修改密码"
+                android:textSize="25dp"/>
+        </LinearLayout>
+
     </LinearLayout>
 </RelativeLayout>

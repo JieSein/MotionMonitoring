@@ -16,6 +16,11 @@ public class UserFragment extends Fragment {
 
     private TextView userInformation;
     private TextView deviceBinding;
+    private TextView alterPassword;
+
+    private TextView user_information_icon;
+    private TextView device_binding_icon;
+    private TextView alter_password_icon;
 
     private Bundle bundle;
     private String data;
@@ -37,14 +42,18 @@ public class UserFragment extends Fragment {
     private void initView(View view){
         Typeface iconfont = Typeface.createFromAsset(getActivity().getAssets(), "icons/iconfont.ttf");
 
-        TextView textview_user_information = (TextView) view.findViewById(R.id.user_information_text_view);
-        textview_user_information.setTypeface(iconfont);
+        user_information_icon = (TextView) view.findViewById(R.id.user_information_text_view);
+        user_information_icon.setTypeface(iconfont);
 
-        TextView textview_device_binding = (TextView) view.findViewById(R.id.device_binding_text_view);
-        textview_device_binding.setTypeface(iconfont);
+        device_binding_icon = (TextView) view.findViewById(R.id.device_binding_text_view);
+        device_binding_icon.setTypeface(iconfont);
+
+        alter_password_icon = (TextView) view.findViewById(R.id.alter_password_text_view);
+        alter_password_icon.setTypeface(iconfont);
 
         userInformation = (TextView) view.findViewById(R.id.user_information);
         deviceBinding = (TextView) view.findViewById(R.id.device_binding);
+        alterPassword = (TextView)view.findViewById(R.id.alter_password);
 
     }
 
@@ -69,6 +78,17 @@ public class UserFragment extends Fragment {
                 bundle.putString("fragment_username", data);
                 intent.putExtras(bundle);
                 Log.d("Fragment", "Fragment向DeviceActivity传输的登录名"+data);
+                startActivity(intent);
+            }
+        });
+
+        alterPassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), AlterPasswordActivity.class);
+                bundle.putString("fragment_username", data);
+                intent.putExtras(bundle);
+                Log.d("Fragment", "Fragment向AlterPasswordActivity传输的登录名"+data);
                 startActivity(intent);
             }
         });

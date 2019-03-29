@@ -20,7 +20,8 @@
         <activity android:name=".RegisterActivity" />
         <activity android:name=".HomeActivity" />
         <activity android:name=".UserInformation" />
-        <activity android:name=".DeviceInformation"></activity>
+        <activity android:name=".DeviceInformation" />
+        <activity android:name=".AlterPasswordActivity"></activity>
     </application>
 
 </manifest>

@@ -238,6 +238,10 @@ public class HomeActivity extends FragmentActivity implements View.OnClickListen
         data = intent.getStringExtra("username");
         Log.d("HomeActivity", "定位"+id);
         if (id == 3){
+            restartButton();
+            icons_user.setTextColor(0xFF33B5E5);
+            tv_user.setTextColor(0xFF33B5E5);
+            tv_title.setText(user);
             initFragment(id);
         }
     }

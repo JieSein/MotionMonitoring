@@ -10,12 +10,15 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.json.motionmonitoring.model.User;
+import com.json.motionmonitoring.util.Validator;
 
 import org.litepal.crud.DataSupport;
 
 import java.util.List;
+import java.util.regex.Pattern;
 
 public class UserInformation extends AppCompatActivity implements View.OnFocusChangeListener {
 
@@ -151,9 +154,9 @@ public class UserInformation extends AppCompatActivity implements View.OnFocusCh
                 emailEdit.setText(user.getE_mail());
                 phoneEdit.setText(user.getPhone());
                 if (user.getSex() == 0){
-                    sexEdit.setText("男");
+                    sexEdit.setText("male");
                 } else if (user.getSex() == 1){
-                    sexEdit.setText("女");
+                    sexEdit.setText("female");
                 }
                 ageEdit.setText(user.getAge().toString());
                 heightEdit.setText(user.getHeight().toString());
@@ -227,17 +230,26 @@ public class UserInformation extends AppCompatActivity implements View.OnFocusCh
         preservation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                getEditString();
                 ContentValues values = new ContentValues();
                 values.put("e_mail", emailEdit.getText().toString().trim());
                 values.put("phone", phoneEdit.getText().toString().trim());
-                if (sexEdit.getText().toString().trim() == "男"){
+                if (sexEdit.getText().toString().trim() == "male"){
                     values.put("sex", 0);
-                } else if (sexEdit.getText().toString().trim() == "女"){
+                } else if (sexEdit.getText().toString().trim() == "female"){
                     values.put("sex", 1);
                 }
                 values.put("age", ageEdit.getText().toString().trim());
-                values.put("height", heightEdit.getText().toString().trim());
-                values.put("weight", weightEdit.getText().toString().trim());
+                if (Validator.verifyNumber(heightText) == false){
+                    Toast.makeText(UserInformation.this, "请输入数字", Toast.LENGTH_SHORT).show();
+                } else {
+                    values.put("height", heightEdit.getText().toString().trim());
+                }
+                if (Validator.verifyNumber(weightText) == false){
+                    Toast.makeText(UserInformation.this, "请输入数字", Toast.LENGTH_SHORT).show();
+                } else {
+                    values.put("weight", weightEdit.getText().toString().trim());
+                }
                 int result = DataSupport.updateAll(User.class, values, "user_name = ?", data);
                 if (result > 0){
                     Log.d("UserInformation", "修改成功");
