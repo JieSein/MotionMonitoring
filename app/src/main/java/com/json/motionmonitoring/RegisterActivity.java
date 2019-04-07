@@ -19,11 +19,23 @@ import android.widget.ToggleButton;
 
 import com.json.motionmonitoring.model.User;
 import com.json.motionmonitoring.util.EdittextContent;
+import com.json.motionmonitoring.util.HttpUtil;
+import com.json.motionmonitoring.util.Utility;
 import com.json.motionmonitoring.util.Validator;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.litepal.crud.DataSupport;
 
+import java.io.IOException;
 import java.util.List;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -171,56 +183,73 @@ public class RegisterActivity extends AppCompatActivity {
                 Log.d("RegisterActivity","注册username:"+usernameText);
                 Log.d("RegisterActivity","注册password:"+passwordText);
 
-                if (TextUtils.isEmpty(usernameText)){
-                    Toast.makeText(RegisterActivity.this, "请输入用户名：", Toast.LENGTH_SHORT).show();
+                if (TextUtils.isEmpty(EdittextContent.getEditString(usernameEdit))){
+                    Toast.makeText(RegisterActivity.this, "请输入账号", Toast.LENGTH_SHORT).show();
                     return;
-                } else if (selectUserByName(EdittextContent.getEditString(usernameEdit)) == true) {
-                    Toast.makeText(RegisterActivity.this, "该账号已被注册", Toast.LENGTH_SHORT).show();
+                } else if (TextUtils.isEmpty(EdittextContent.getEditString(passwordEdit))){
+                    Toast.makeText(RegisterActivity.this, "请输入密码", Toast.LENGTH_SHORT).show();
                     return;
-                } else if (TextUtils.isEmpty(passwordText)){
-                    Toast.makeText(RegisterActivity.this, "请输入密码：", Toast.LENGTH_SHORT).show();
+                } else if (Validator.verifyPassword(EdittextContent.getEditString(passwordEdit)) == false) {
+                    Toast.makeText(RegisterActivity.this, "请输入6到20位的字符", Toast.LENGTH_SHORT).show();
                     return;
-                } else if (Validator.verifyPassword(passwordEdit.getText().toString().trim()) == false) {
-                    Toast.makeText(RegisterActivity.this, "请输入6到20位的数字或字母", Toast.LENGTH_SHORT).show();
+                } else if (TextUtils.isEmpty(EdittextContent.getEditString(passwordSureEdit))){
+                    Toast.makeText(RegisterActivity.this, "请输入确认密码", Toast.LENGTH_SHORT).show();
                     return;
-                } else if (TextUtils.isEmpty(passwordSureText)){
-                    Toast.makeText(RegisterActivity.this, "请确认密码：", Toast.LENGTH_SHORT).show();
-                    return;
-                } else if (!passwordSureEdit.getText().toString().trim().equals(passwordEdit.getText().toString().trim())){
+                } else if (!EdittextContent.getEditString(passwordSureEdit).equals(EdittextContent.getEditString(passwordEdit))){
                     Toast.makeText(RegisterActivity.this, "两次密码不一致", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
-                User user = new User();
-                user.setUser_name(usernameText);
-                user.setPassword(passwordText);
-                boolean i = user.save();
-
-                if (i){
-                    Log.d("RegisterActivity","插入成功:");
-                    returnLoginActivity();
-                } else {
-                    Log.d("RegisterActivity","插入失败:");
-                }
-
+                RequestBody requestBody = new FormBody.Builder()
+                        .add("username", EdittextContent.getEditString(usernameEdit))
+                        .add("password", EdittextContent.getEditString(passwordEdit))
+                        .build();
+                commitToServer("http://192.168.43.4:8080/MIMS/auRegister", requestBody);
             }
         });
     }
 
-    private boolean selectUserByName(String username){
-        List<User> users = DataSupport.where("user_name = ?", username).find(User.class);
-        for (User user : users){
-            if (user != null){
-                if (EdittextContent.getEditString(usernameEdit).equals(user.getUser_name())){
-                    return true;
-                } else {
-                    return false;
-                }
-            } else {
-                return false;
+    private void commitToServer(String address, RequestBody requestBody) {
+        HttpUtil.sendOkHttpPostRequest(address, requestBody, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(RegisterActivity.this, "连接失败", Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
-        }
-        return false;
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                final String responseText = response.body().string();
+                String flag = Utility.handleValidateResponse(responseText);
+                if ("USER_EXIST".equals(flag)){
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(RegisterActivity.this,"该账号已被注册:"+responseText, Toast.LENGTH_LONG).show();
+                            Log.d("MainActivity", "该账号已被注册");
+                            return;
+                        }
+                    });
+                } else if ("REGISTER_SUCCESS".equals(flag)){
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(RegisterActivity.this,"注册成功:"+responseText, Toast.LENGTH_SHORT).show();
+                            Log.d("MainActivity", "注册成功");
+                            returnLoginActivity();
+                        }
+                    });
+                } else if ("REGISTER_FAIL".equals(flag)){
+                    Toast.makeText(RegisterActivity.this,"注册失败:"+responseText, Toast.LENGTH_SHORT).show();
+                    Log.d("MainActivity", "注册失败");
+                    return;
+                }
+            }
+        });
     }
 
     private void getEditString(){

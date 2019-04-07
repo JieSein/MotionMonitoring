@@ -13,13 +13,23 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.json.motionmonitoring.model.Device;
 import com.json.motionmonitoring.model.User;
+import com.json.motionmonitoring.util.HttpUtil;
+import com.json.motionmonitoring.util.Utility;
 
 import org.litepal.crud.DataSupport;
 
+import java.io.IOException;
 import java.util.List;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 public class DeviceInformation extends AppCompatActivity {
 
@@ -68,40 +78,44 @@ public class DeviceInformation extends AppCompatActivity {
         preservationButton = (Button) findViewById(R.id.device_preservation_button);
     }
 
-    private void getEditString(){
-        deviceCodeText = deviceCodeEdit.getText().toString().trim();
-    }
-
     private void selectUserDevice(){
         intent = getIntent();
         data = intent.getStringExtra("fragment_username");
         Log.d("DeviceInformation", "Activity接收Fragment的登录名"+data);
 
-        userCursor = DataSupport.findBySQL("select id from user where user_name = ?", data);
-        if (userCursor.moveToFirst()){
-            do {
-                users_id = userCursor.getInt(userCursor.getColumnIndex("id"));
-                Log.d("DeviceInformation", "用户id："+users_id);
-
-                deviceCursor = selectDevice(users_id);
-                if (deviceCursor.moveToFirst()){
-                    do {
-                        id = deviceCursor.getInt(deviceCursor.getColumnIndex("id"));
-                        user_id = deviceCursor.getInt(deviceCursor.getColumnIndex("user_id"));
-                        Log.d("DeviceInformation", "device表中的设备id："+id);
-                        Log.d("DeviceInformation", "device表中的用户id："+user_id);
-
-                        deviceCodeEdit.setText(String.valueOf(id));
-                    } while (deviceCursor.moveToNext());
-                }
-            } while (userCursor.moveToNext());
-        }
+        commitToSelServer("http://192.168.43.4:8080/MIMS/auDevInformation?username="+data);
 
     }
 
-    private Cursor selectDevice(int code){
-        Cursor cursor = DataSupport.findBySQL("select * from device where user_id = ?", String.valueOf(code));
-        return cursor;
+    private void commitToSelServer(String address){
+        HttpUtil.sendOkHttpGetRequest(address, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Toast.makeText(DeviceInformation.this, "连接失败", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String responseText = response.body().string();
+                final Device device = Utility.handleSelDevResponse(responseText);
+                if (device != null){
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            deviceCodeEdit.setText(String.valueOf(device.getId()));
+                        }
+                    });
+                } else {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(DeviceInformation.this, "查询不到设备号", Toast.LENGTH_SHORT).show();
+                            deviceCodeEdit.setText("");
+                        }
+                    });
+                }
+            }
+        });
     }
 
     private void UpdateDeviceInformation(){
@@ -115,33 +129,71 @@ public class DeviceInformation extends AppCompatActivity {
         preservationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Device device = new Device();
-                Cursor cursor = selectDevice(users_id);
-                if (cursor.moveToFirst()){
-                    ContentValues values = new ContentValues();
-                    values.put("id", deviceCodeEdit.getText().toString().trim());
-                    int result = DataSupport.updateAll(Device.class, values, "user_id = ?", String.valueOf(users_id));
-                    if (result > 0){
-                        Log.d("DeviceInformation", "修改设备号成功");
-                        returnUserFragment();
-                    } else {
-                        Log.d("DeviceInformation", "修改设备号失败");
-                    }
-                } else {
-                    device.setId(id);
-                    device.setUser_id(users_id);
-                    boolean i = device.save();
-                    if (i){
-                        Log.d("DeviceInformation","插入成功:");
-                        returnUserFragment();
-                    } else {
-                        Log.d("DeviceInformation","插入失败:");
-                    }
+                getEditString();
 
-                }
-                Log.d("DeviceInformation", "设备号编辑框："+deviceCodeEdit.getText().toString().trim());
+                Log.d("DeviceInformation", data);
+                Log.d("DeviceInformation", deviceCodeText);
+
+                RequestBody requestBody = new FormBody.Builder()
+                        .add("username", data)
+                        .add("deviceCode", deviceCodeText)
+                        .build();
+
+                commitToUpdDerver("http://192.168.43.4:8080/MIMS/auDevUpdInformation", requestBody);
             }
         });
+    }
+
+    private void commitToUpdDerver(String address, RequestBody requestBody){
+        HttpUtil.sendOkHttpPostRequest(address, requestBody, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Toast.makeText(DeviceInformation.this, "连接失败", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String responseText = response.body().string();
+                String flag = Utility.handleValidateResponse(responseText);
+                if ("UPDATE_OK".equals(flag)){
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Log.d("DeviceInformation", "修改成功");
+                            returnUserFragment();
+                        }
+                    });
+                } else if ("UPDATE_FAIL".equals(flag)){
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Log.d("DeviceInformation", "修改失败");
+                            return;
+                        }
+                    });
+                } else if ("INSERT_OK".equals(flag)){
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Log.d("DeviceInformation", "插入成功");
+                            returnUserFragment();
+                        }
+                    });
+                } else if ("INSERT_FAIL".equals(flag)){
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Log.d("DeviceInformation", "插入失败");
+                            return;
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+    private void getEditString(){
+        deviceCodeText = deviceCodeEdit.getText().toString().trim();
     }
 
     private void returnUserFragment(){

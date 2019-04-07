@@ -20,11 +20,20 @@ import android.widget.ToggleButton;
 
 import com.json.motionmonitoring.model.User;
 import com.json.motionmonitoring.util.EdittextContent;
+import com.json.motionmonitoring.util.HttpUtil;
+import com.json.motionmonitoring.util.Utility;
 import com.json.motionmonitoring.util.Validator;
 
 import org.litepal.crud.DataSupport;
 
+import java.io.IOException;
 import java.util.List;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 public class AlterPasswordActivity extends AppCompatActivity {
 
@@ -44,6 +53,10 @@ public class AlterPasswordActivity extends AppCompatActivity {
     private EditText editText_originalPwd;
     private EditText editText_newPwd;
     private EditText editText_newPwdSure;
+
+    private String originalPwd;
+    private String newPwd;
+    private String newPwdSure;
 
     private Button preservation;
     private String data;
@@ -169,17 +182,6 @@ public class AlterPasswordActivity extends AppCompatActivity {
         });
     }
 
-    private String selectPwdByName(){
-        List<User> users = DataSupport.where("user_name = ?", data).find(User.class);
-        for (User user : users){
-            if (user != null){
-                Log.d("AlterPasswordActivity", "selectPwdByName: "+user.getPassword());
-                return  user.getPassword();
-            }
-        }
-        return "";
-    }
-
     private void onClickPreservation(){
         icon_returnButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -191,38 +193,72 @@ public class AlterPasswordActivity extends AppCompatActivity {
         preservation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String password = selectPwdByName();
-                if (TextUtils.isEmpty(EdittextContent.getEditString(editText_originalPwd))){
+                getEditString();
+                if (TextUtils.isEmpty(originalPwd)){
                     Toast.makeText(AlterPasswordActivity.this, "请输入原密码：", Toast.LENGTH_SHORT).show();
                     return;
-                } else if (!EdittextContent.getEditString(editText_originalPwd).equals(password)) {
-                    Toast.makeText(AlterPasswordActivity.this, "密码错误", Toast.LENGTH_SHORT).show();
-                    return;
-                }else if (TextUtils.isEmpty(EdittextContent.getEditString(editText_newPwd))){
+                } else if (TextUtils.isEmpty(newPwd)){
                     Toast.makeText(AlterPasswordActivity.this, "请输入新密码：", Toast.LENGTH_SHORT).show();
                     return;
-                } else if (Validator.verifyPassword(EdittextContent.getEditString(editText_newPwd)) == false) {
-                    Toast.makeText(AlterPasswordActivity.this, "请输入6到20位的数字或字母", Toast.LENGTH_SHORT).show();
-                    return;
-                }else if (TextUtils.isEmpty(EdittextContent.getEditString(editText_newPwdSure))){
+                }else if (TextUtils.isEmpty(newPwdSure)){
                     Toast.makeText(AlterPasswordActivity.this, "请再次输入新密码：", Toast.LENGTH_SHORT).show();
                     return;
-                } else if (!EdittextContent.getEditString(editText_newPwdSure).equals(EdittextContent.getEditString(editText_newPwd))){
+                } else if (!newPwdSure.equals(newPwd)){
                     Toast.makeText(AlterPasswordActivity.this, "两次密码不一致", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
-                ContentValues values = new ContentValues();
-                values.put("password", EdittextContent.getEditString(editText_newPwd));
-                int result = DataSupport.updateAll(User.class, values, "user_name = ?", data);
-                if (result > 0){
-                    Log.d("AlterPasswordActivity", "密码修改成功");
-                    returnUserFragment();
-                } else {
+                RequestBody requestBody = new FormBody.Builder()
+                        .add("username", data)
+                        .add("originalPwd", originalPwd)
+                        .add("newPwd", newPwd)
+                        .build();
+
+                commitToServer("http://192.168.43.4:8080/MIMS/auPassword", requestBody);
+            }
+        });
+    }
+
+    private void commitToServer(String address, RequestBody requestBody) {
+        HttpUtil.sendOkHttpPostRequest(address, requestBody, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Toast.makeText(AlterPasswordActivity.this, "连接失败", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String responseText = response.body().string();
+                String flag = Utility.handleValidateResponse(responseText);
+                if ("PASSWORD_ERROR".equals(flag)){
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Log.d("AlterPasswordActivity", "密码错误");
+                            Toast.makeText(AlterPasswordActivity.this, "原密码错误", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                    });
+                } else if ("PASSWORD_UPDATE_OK".equals(flag)){
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Log.d("AlterPasswordActivity", "密码修改成功");
+                            returnUserFragment();
+                        }
+                    });
+                } else if ("PASSWORD_UPDATE_FAIL".equals(flag)){
                     Log.d("AlterPasswordActivity", "密码修改失败");
+                    return;
                 }
             }
         });
+    }
+
+    private void getEditString(){
+        originalPwd = editText_originalPwd.getText().toString().trim();
+        newPwd = editText_newPwd.getText().toString().trim();
+        newPwdSure = editText_newPwdSure.getText().toString().trim();
     }
 
     private void returnUserFragment(){

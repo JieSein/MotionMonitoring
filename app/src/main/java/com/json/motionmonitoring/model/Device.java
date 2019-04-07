@@ -7,6 +7,8 @@ public class Device extends DataSupport {
 
     private Integer user_id;
 
+    private User mims_user;
+
     public Integer getId() {
         return id;
     }
@@ -23,4 +25,11 @@ public class Device extends DataSupport {
         this.user_id = user_id;
     }
 
+    public User getMims_user() {
+        return mims_user;
+    }
+
+    public void setMims_user(User mims_user) {
+        this.mims_user = mims_user;
+    }
 }

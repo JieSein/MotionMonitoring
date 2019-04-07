@@ -12,14 +12,25 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.json.motionmonitoring.model.User;
 import com.json.motionmonitoring.util.EdittextContent;
+import com.json.motionmonitoring.util.HttpUtil;
+import com.json.motionmonitoring.util.Utility;
 import com.json.motionmonitoring.util.Validator;
 
 import org.litepal.crud.DataSupport;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.regex.Pattern;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 public class UserInformation extends AppCompatActivity implements View.OnFocusChangeListener {
 
@@ -132,38 +143,14 @@ public class UserInformation extends AppCompatActivity implements View.OnFocusCh
         weightEdit.setOnFocusChangeListener(this);
     }
 
-    private void getEditString(){
-        usernameText = usernameEdit.getText().toString().trim();
-        emailText = emailEdit.getText().toString().trim();
-        phoneText = phoneEdit.getText().toString().trim();
-        sexText = sexEdit.getText().toString().trim();
-        ageText = ageEdit.getText().toString().trim();
-        heightText = heightEdit.getText().toString().trim();
-        weightText = weightEdit.getText().toString().trim();
-    }
-
-
     private void selectUser(){
         Intent intent = getIntent();
         data = intent.getStringExtra("fragment_username");
         Log.d("UserInformation", "Activity接收Fragment的登录名"+data);
 
-        List<User> users = DataSupport.where("user_name = ?", data).find(User.class);
-        for (User user : users){
-            if (user != null){
-                usernameEdit.setText(user.getUser_name());
-                emailEdit.setText(user.getE_mail());
-                phoneEdit.setText(user.getPhone());
-                if (user.getSex() == 0){
-                    sexEdit.setText("male");
-                } else if (user.getSex() == 1){
-                    sexEdit.setText("female");
-                }
-                ageEdit.setText(user.getAge().toString());
-                heightEdit.setText(user.getHeight().toString());
-                weightEdit.setText(user.getWeight().toString());
-            }
-        }
+        /*RequestBody requestBody = new FormBody.Builder().add("username", data).build();*/
+
+        commitToSelServer("http://192.168.43.4:8080/MIMS/auInformation?username="+data);
     }
 
     @Override
@@ -232,36 +219,113 @@ public class UserInformation extends AppCompatActivity implements View.OnFocusCh
             @Override
             public void onClick(View v) {
                 getEditString();
-                ContentValues values = new ContentValues();
-                if (Validator.verifyEmail(EdittextContent.getEditString(emailEdit)) == false){
-                    Toast.makeText(UserInformation.this, "请输入正确的邮箱格式", Toast.LENGTH_SHORT).show();
-                    return;
-                } else {
-                    values.put("e_mail", emailEdit.getText().toString().trim());
+
+                User user = new User();
+                user.setUser_name(data);
+                user.setE_mail(emailText);
+                user.setPhone(phoneText);
+                if ("男".equals(sexText)){
+                    user.setSex(0);
+                } else if ("女".equals(sexText)){
+                    user.setSex(1);
                 }
-                if (Validator.verifyPhone(EdittextContent.getEditString(phoneEdit)) == false){
-                    Toast.makeText(UserInformation.this, "手机号码格式有误", Toast.LENGTH_SHORT).show();
-                    return;
+                user.setAge(Integer.parseInt(ageText));
+                user.setHeight(Double.parseDouble(heightText));
+                user.setWeight(Double.parseDouble(weightText));
+
+                Gson gson = new Gson();
+                String json = gson.toJson(user);
+                Log.d("UserInformaiton", "////"+json);
+
+                RequestBody requestBody = FormBody.create(
+                        MediaType.parse("application/json; charset=utf-8"), json);
+
+                commitToUpdServer("http://192.168.43.4:8080/MIMS/auUpdInformation", requestBody);
+            }
+        });
+    }
+
+    private void commitToSelServer(String address) {
+        HttpUtil.sendOkHttpGetRequest(address, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Toast.makeText(UserInformation.this, "连接失败", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onResponse(Call call, final Response response) throws IOException {
+                String responseText = response.body().string();
+                final  User user = Utility.handleSelUserResponse(responseText);
+                if (user != null){
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            usernameEdit.setText(data);
+                            emailEdit.setText(user.getE_mail());
+                            phoneEdit.setText(user.getPhone());
+                            if (user.getSex() == 0){
+                                sexEdit.setText("男");
+                            } else if (user.getSex() == 1){
+                                sexEdit.setText("女");
+                            }
+                            ageEdit.setText(String.valueOf(user.getAge()));
+                            heightEdit.setText(String.valueOf(user.getHeight()));
+                            weightEdit.setText(String.valueOf(user.getWeight()));
+                        }
+                    });
                 } else {
-                    values.put("phone", phoneEdit.getText().toString().trim());
-                }
-                if (sexEdit.getText().toString().trim() == "male"){
-                    values.put("sex", 0);
-                } else if (sexEdit.getText().toString().trim() == "female"){
-                    values.put("sex", 1);
-                }
-                values.put("age", ageEdit.getText().toString().trim());
-                values.put("height", heightEdit.getText().toString().trim());
-                values.put("weight", weightEdit.getText().toString().trim());
-                int result = DataSupport.updateAll(User.class, values, "user_name = ?", data);
-                if (result > 0){
-                    Log.d("UserInformation", "修改成功");
-                    returnUserFragment();
-                } else {
-                    Log.d("UserInformation", "修改失败");
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(UserInformation.this, "查找不到用户信息", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                    });
                 }
             }
         });
+    }
+
+    private void commitToUpdServer(String address, RequestBody requestBody) {
+        HttpUtil.sendOkHttpPostRequest(address, requestBody, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Toast.makeText(UserInformation.this, "连接失败", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String responseText = response.body().string();
+                String flag = Utility.handleValidateResponse(responseText);
+                if ("UPDATE_OK".equals(flag)){
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Log.d("UserInformaiton", "修改成功");
+                            returnUserFragment();
+                        }
+                    });
+                } else if ("UPDATE_FAIL".equals(flag)){
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Log.d("UserInformaiton", "修改失败 ");
+                            return;
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+    private void getEditString(){
+        usernameText = usernameEdit.getText().toString().trim();
+        emailText = emailEdit.getText().toString().trim();
+        phoneText = phoneEdit.getText().toString().trim();
+        sexText = sexEdit.getText().toString().trim();
+        ageText = ageEdit.getText().toString().trim();
+        heightText = heightEdit.getText().toString().trim();
+        weightText = weightEdit.getText().toString().trim();
     }
 
     private void returnUserFragment(){

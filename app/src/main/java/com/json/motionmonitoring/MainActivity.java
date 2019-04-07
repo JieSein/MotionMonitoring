@@ -21,13 +21,23 @@ import android.widget.ToggleButton;
 import com.json.motionmonitoring.model.Device;
 import com.json.motionmonitoring.model.User;
 import com.json.motionmonitoring.util.EdittextContent;
+import com.json.motionmonitoring.util.HttpUtil;
+import com.json.motionmonitoring.util.Utility;
+import com.json.motionmonitoring.util.Validator;
 
 import org.litepal.LitePal;
 import org.litepal.crud.DataSupport;
 import org.litepal.tablemanager.Connector;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -69,37 +79,6 @@ public class MainActivity extends AppCompatActivity {
         pwdHideOrDisplay();
         loginInit();
 
-
-
-        Button test = (Button)findViewById(R.id.select_test);
-        test.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                /*Device device = new Device();
-                device.setId(1);
-                device.setUser_id(1);
-                device.save();
-                Log.d("MainActivity", "成功");
-                List<Device> devices = DataSupport.findAll(Device.class);
-                for (Device device : devices){
-                    Log.d("MainActivity", "设备id："+device.getId());
-                    Log.d("MainActivity", "用户id："+device.getUser_id());
-                }*/
-                List<User> users = DataSupport.findAll(User.class);
-                for (User user:users){
-                    Log.d("MainActivity", "id:"+user.getId());
-                    Log.d("MainActivity", "username:"+user.getUser_name());
-                    Log.d("MainActivity", "password:"+user.getPassword());
-                    Log.d("MainActivity", "email:"+user.getE_mail());
-                    Log.d("MainActivity", "phone:"+user.getPhone());
-                    Log.d("MainActivity", "sex:"+user.getSex());
-                    Log.d("MainActivity", "age:"+user.getAge());
-                    Log.d("MainActivity", "height:"+user.getHeight());
-                    Log.d("MainActivity", "weight:"+user.getWeight());
-                    Log.d("MainActivity", "*****************************************");
-                }
-            }
-        });
     }
 
     private void initView(){
@@ -172,32 +151,60 @@ public class MainActivity extends AppCompatActivity {
 
                 if (TextUtils.isEmpty(usernameText)){
                     Toast.makeText(MainActivity.this, "请输入账号!", Toast.LENGTH_SHORT).show();
+                    return;
                 } else if (TextUtils.isEmpty(passwordText)){
                     Toast.makeText(MainActivity.this, "请输入密码!", Toast.LENGTH_SHORT).show();
+                    return;
+                } else if (Validator.verifyPassword(passwordText) == false){
+                    Toast.makeText(MainActivity.this, "请输入6到20位的密码!", Toast.LENGTH_SHORT).show();
+                    return;
                 }
 
-                Log.d("MainActivity", "****账号" + EdittextContent.getEditString(usernameEdit));
-                Log.d("MainActivity", "****密码" + EdittextContent.getEditString(passwordEdit));
-                List<User> users = DataSupport.where("user_name = ? and password = ?",
-                        EdittextContent.getEditString(usernameEdit), EdittextContent.getEditString(passwordEdit)).find(User.class);
-                for (User user : users) {
-                    if (user != null) {
-                        if (user.getUser_name().toString().equals(usernameText)) {
-                            if (user.getPassword().toString().equals(passwordText)) {
-                                Toast.makeText(MainActivity.this, "登录成功", Toast.LENGTH_SHORT).show();
-                                returnHomeActivity();
-                            } else {
-                                Log.d("MainActivity", "密码错误" + user.getPassword());
-                                Toast.makeText(MainActivity.this, "密码错误", Toast.LENGTH_SHORT).show();
-                                break;
-                            }
-                        } else {
-                            Toast.makeText(MainActivity.this, "账号错误", Toast.LENGTH_SHORT).show();
-                            break;
-                        }
-                    } else {
-                        Log.d("MainActivity", "该账号未注册");
+                Log.d("MainActivity", "****账号" + usernameText);
+                Log.d("MainActivity", "****密码" + passwordText);
+
+                RequestBody requestBody = new FormBody.Builder()
+                        .add("username", usernameText)
+                        .add("password", passwordText)
+                        .build();
+
+                commitToServer("http://192.168.43.4:8080/MIMS/auLogin", requestBody);
+            }
+        });
+    }
+
+    private void commitToServer(String address, RequestBody requestBody){
+        HttpUtil.sendOkHttpPostRequest(address, requestBody, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(MainActivity.this, "连接失败", Toast.LENGTH_SHORT).show();
                     }
+                });
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String responseText = response.body().string();
+                String flag = Utility.handleValidateResponse(responseText);
+                if ("OK".equals(flag)){
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Log.d("MainActivity", "登录成功");
+                            returnHomeActivity();
+                        }
+                    });
+                } else if ("NO".equals(flag)){
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(MainActivity.this, "账号错误", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                    });
                 }
             }
         });
