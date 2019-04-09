@@ -40,6 +40,7 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class MainActivity extends AppCompatActivity {
+    public static final String USERNAME = "USERNAME";
 
     private TextView RegisterTextView;
 
@@ -216,9 +217,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void returnHomeActivity(){
-        Intent intent = new Intent(MainActivity.this, HomeActivity.class);
+        Intent intent = new Intent(MainActivity.this, BleScan_Activity.class);
         Log.d("MainActivity", "登录名"+usernameText);
-        intent.putExtra("username", usernameText);
+        intent.putExtra(USERNAME, usernameText);
         startActivity(intent);
     }
 }

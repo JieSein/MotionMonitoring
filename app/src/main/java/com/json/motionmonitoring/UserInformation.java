@@ -70,7 +70,8 @@ public class UserInformation extends AppCompatActivity implements View.OnFocusCh
     private String heightText;
     private String weightText;
 
-    private String data;
+    private String rev_username;
+    private String mDeviceAddress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -145,12 +146,12 @@ public class UserInformation extends AppCompatActivity implements View.OnFocusCh
 
     private void selectUser(){
         Intent intent = getIntent();
-        data = intent.getStringExtra("fragment_username");
-        Log.d("UserInformation", "Activity接收Fragment的登录名"+data);
+        rev_username = intent.getStringExtra(MainActivity.USERNAME);
+        mDeviceAddress = intent.getStringExtra(HomeActivity.EXTRAS_DEVICE_ADDRESS);
+        Log.d("UserInformation", "Activity接收Fragment的登录名"+rev_username);
+        Log.d("UserInformation", "Activity接收Fragment的蓝牙address"+mDeviceAddress);
 
-        /*RequestBody requestBody = new FormBody.Builder().add("username", data).build();*/
-
-        commitToSelServer("http://192.168.43.4:8080/MIMS/auInformation?username="+data);
+        commitToSelServer("http://192.168.43.4:8080/MIMS/auInformation?username="+rev_username);
     }
 
     @Override
@@ -221,7 +222,7 @@ public class UserInformation extends AppCompatActivity implements View.OnFocusCh
                 getEditString();
 
                 User user = new User();
-                user.setUser_name(data);
+                user.setUser_name(rev_username);
                 user.setE_mail(emailText);
                 user.setPhone(phoneText);
                 if ("男".equals(sexText)){
@@ -249,7 +250,12 @@ public class UserInformation extends AppCompatActivity implements View.OnFocusCh
         HttpUtil.sendOkHttpGetRequest(address, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                Toast.makeText(UserInformation.this, "连接失败", Toast.LENGTH_SHORT).show();
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(UserInformation.this, "连接失败", Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
 
             @Override
@@ -260,7 +266,7 @@ public class UserInformation extends AppCompatActivity implements View.OnFocusCh
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            usernameEdit.setText(data);
+                            usernameEdit.setText(rev_username);
                             emailEdit.setText(user.getE_mail());
                             phoneEdit.setText(user.getPhone());
                             if (user.getSex() == 0){
@@ -330,7 +336,8 @@ public class UserInformation extends AppCompatActivity implements View.OnFocusCh
 
     private void returnUserFragment(){
         Intent intent = new Intent(UserInformation.this, HomeActivity.class);
-        intent.putExtra("username", data);
+        intent.putExtra(MainActivity.USERNAME, rev_username);
+        intent.putExtra(HomeActivity.EXTRAS_DEVICE_ADDRESS, mDeviceAddress);
         intent.putExtra("id", 3);
         startActivity(intent);
     }

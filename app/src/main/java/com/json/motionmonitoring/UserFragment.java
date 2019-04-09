@@ -23,7 +23,8 @@ public class UserFragment extends Fragment {
     private TextView alter_password_icon;
 
     private Bundle bundle;
-    private String data;
+    private String rev_username;
+    private String mDeviceAddress;
 
     @Nullable
     @Override
@@ -33,8 +34,10 @@ public class UserFragment extends Fragment {
        initView(view);
 
        bundle = getArguments();
-       data = bundle.getString("usernames");
-       Log.d("UserFragment", "Fragment接收的登录名"+data);
+       rev_username = bundle.getString(MainActivity.USERNAME);
+       mDeviceAddress = bundle.getString(HomeActivity.EXTRAS_DEVICE_ADDRESS);
+       Log.d("UserFragment", "Fragment接收的登录名"+rev_username);
+       Log.d("UserFragment", "Fragment接收的蓝牙address:"+mDeviceAddress);
 
        return view;
     }
@@ -64,9 +67,11 @@ public class UserFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), UserInformation.class);
-                bundle.putString("fragment_username", data);
+                bundle.putString(MainActivity.USERNAME, rev_username);
+                bundle.putString(HomeActivity.EXTRAS_DEVICE_ADDRESS, mDeviceAddress);
                 intent.putExtras(bundle);
-                Log.d("Fragment", "Fragment想UserActivity传输的登录名"+data);
+                Log.d("Fragment", "Fragment想UserActivity传输的登录名"+rev_username);
+                Log.d("Fragment", "Fragment想UserActivity传输的蓝牙address"+mDeviceAddress);
                 startActivity(intent);
             }
         });
@@ -75,9 +80,12 @@ public class UserFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), DeviceInformation.class);
-                bundle.putString("fragment_username", data);
+                bundle.putString(MainActivity.USERNAME, rev_username);
+                bundle.putString(HomeActivity.EXTRAS_DEVICE_ADDRESS, mDeviceAddress);
+                bundle.putInt("id", 3);
                 intent.putExtras(bundle);
-                Log.d("Fragment", "Fragment向DeviceActivity传输的登录名"+data);
+                Log.d("Fragment", "Fragment向DeviceActivity传输的登录名"+rev_username);
+                Log.d("Fragment", "Fragment想DeviceActivity传输的蓝牙address"+mDeviceAddress);
                 startActivity(intent);
             }
         });
@@ -86,9 +94,11 @@ public class UserFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), AlterPasswordActivity.class);
-                bundle.putString("fragment_username", data);
+                bundle.putString(MainActivity.USERNAME, rev_username);
+                bundle.putString(HomeActivity.EXTRAS_DEVICE_ADDRESS, mDeviceAddress);
                 intent.putExtras(bundle);
-                Log.d("Fragment", "Fragment向AlterPasswordActivity传输的登录名"+data);
+                Log.d("Fragment", "Fragment向AlterPasswordActivity传输的登录名"+rev_username);
+                Log.d("Fragment", "Fragment想AlterPasswordActivity传输的蓝牙address"+mDeviceAddress);
                 startActivity(intent);
             }
         });

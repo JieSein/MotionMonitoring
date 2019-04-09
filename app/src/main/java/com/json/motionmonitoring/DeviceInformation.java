@@ -42,7 +42,9 @@ public class DeviceInformation extends AppCompatActivity {
     private String deviceCodeText;
 
     private Intent intent;
-    private String data;
+    private String rev_username;
+    private String mDeviceAddress;
+    private int rev_flag;
 
     private int id;
     private int user_id;
@@ -80,10 +82,14 @@ public class DeviceInformation extends AppCompatActivity {
 
     private void selectUserDevice(){
         intent = getIntent();
-        data = intent.getStringExtra("fragment_username");
-        Log.d("DeviceInformation", "Activity接收Fragment的登录名"+data);
+        rev_username = intent.getStringExtra(MainActivity.USERNAME);
+        mDeviceAddress = intent.getStringExtra(HomeActivity.EXTRAS_DEVICE_ADDRESS);
+        rev_flag = intent.getIntExtra("id", 0);
+        Log.d("DeviceInformation", "Activity接收Fragment的登录名"+rev_username);
+        Log.d("DeviceInformation", "Activity接收Fragment的蓝牙address"+mDeviceAddress);
+        Log.d("DeviceInformation", "Activity接收的标志位"+rev_flag);
 
-        commitToSelServer("http://192.168.43.4:8080/MIMS/auDevInformation?username="+data);
+        commitToSelServer("http://192.168.43.4:8080/MIMS/auDevInformation?username="+rev_username);
 
     }
 
@@ -91,7 +97,12 @@ public class DeviceInformation extends AppCompatActivity {
         HttpUtil.sendOkHttpGetRequest(address, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                Toast.makeText(DeviceInformation.this, "连接失败", Toast.LENGTH_SHORT).show();
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(DeviceInformation.this, "连接失败", Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
 
             @Override
@@ -131,11 +142,11 @@ public class DeviceInformation extends AppCompatActivity {
             public void onClick(View v) {
                 getEditString();
 
-                Log.d("DeviceInformation", data);
+                Log.d("DeviceInformation", rev_username);
                 Log.d("DeviceInformation", deviceCodeText);
 
                 RequestBody requestBody = new FormBody.Builder()
-                        .add("username", data)
+                        .add("username", rev_username)
                         .add("deviceCode", deviceCodeText)
                         .build();
 
@@ -197,10 +208,20 @@ public class DeviceInformation extends AppCompatActivity {
     }
 
     private void returnUserFragment(){
-        Intent intent = new Intent(DeviceInformation.this, HomeActivity.class);
-        intent.putExtra("username", data);
-        intent.putExtra("id", 3);
-        startActivity(intent);
+        if (rev_flag == 3){
+            Intent intent = new Intent(DeviceInformation.this, HomeActivity.class);
+            intent.putExtra(MainActivity.USERNAME, rev_username);
+            intent.putExtra(HomeActivity.EXTRAS_DEVICE_ADDRESS, mDeviceAddress);
+            intent.putExtra("id", 3);
+            startActivity(intent);
+        }
+        if (rev_flag == 4){
+            getEditString();
+            Intent intent = new Intent(DeviceInformation.this, BleScan_Activity.class);
+            intent.putExtra(MainActivity.USERNAME, rev_username);
+            intent.putExtra(HomeActivity.EXTRAS_DEVICE_ADDRESS, deviceCodeText);
+            startActivity(intent);
+        }
     }
 
 }

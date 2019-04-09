@@ -59,7 +59,8 @@ public class AlterPasswordActivity extends AppCompatActivity {
     private String newPwdSure;
 
     private Button preservation;
-    private String data;
+    private String rev_username;
+    private String mDeviceAddress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -209,7 +210,7 @@ public class AlterPasswordActivity extends AppCompatActivity {
                 }
 
                 RequestBody requestBody = new FormBody.Builder()
-                        .add("username", data)
+                        .add("username", rev_username)
                         .add("originalPwd", originalPwd)
                         .add("newPwd", newPwd)
                         .build();
@@ -263,15 +264,18 @@ public class AlterPasswordActivity extends AppCompatActivity {
 
     private void returnUserFragment(){
         Intent intent = new Intent(AlterPasswordActivity.this, HomeActivity.class);
-        intent.putExtra("username", data);
+        intent.putExtra(MainActivity.USERNAME, rev_username);
+        intent.putExtra(HomeActivity.EXTRAS_DEVICE_ADDRESS, mDeviceAddress);
         intent.putExtra("id", 3);
         startActivity(intent);
     }
 
     private void receiveData(){
         Intent intent = getIntent();
-        data = intent.getStringExtra("fragment_username");
-        Log.d("AlterPasswordActivity", "Activity接收Fragment的登录名"+data);
+        rev_username = intent.getStringExtra(MainActivity.USERNAME);
+        mDeviceAddress = intent.getStringExtra(HomeActivity.EXTRAS_DEVICE_ADDRESS);
+        Log.d("AlterPasswordActivity", "Activity接收Fragment的登录名"+rev_username);
+        Log.d("AlterPasswordActivity", "Activity接收Fragment的蓝牙address"+mDeviceAddress);
     }
 
 }

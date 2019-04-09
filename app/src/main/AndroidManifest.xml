@@ -3,10 +3,16 @@
     package="com.json.motionmonitoring">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+
+    <uses-feature
+        android:name="android.hardware.bluetooth_le"
+        android:required="true" />
 
     <application
-        android:name="org.litepal.LitePalApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -20,11 +26,16 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".BleScan_Activity"/>
         <activity android:name=".RegisterActivity" />
         <activity android:name=".HomeActivity" />
         <activity android:name=".UserInformation" />
         <activity android:name=".DeviceInformation" />
-        <activity android:name=".AlterPasswordActivity"></activity>
+        <activity android:name=".AlterPasswordActivity" />
+
+        <service
+            android:name=".services.BluetoothLeService"
+            android:enabled="true" />
     </application>
 
 </manifest>
