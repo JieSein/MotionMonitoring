@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/colorMotionTheme">
+
+        <TextView
+            android:id="@+id/alter_password_return_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:text="@string/icons_return"
+            android:textSize="30dp"
+            android:textColor="#fff"/>
+
+        <TextView
+            android:id="@+id/user_information_title_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="修改密码"
+            android:textColor="#fff"
+            android:textSize="25dp"/>
+    </RelativeLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingTop="10dp"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp">
+
+        <LinearLayout
+            android:id="@+id/original_password_layout"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/none_vertical_border_edittext">
+
+            <TextView
+                android:id="@+id/original_password_icon"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_gravity="center_vertical"
+                android:gravity="center"
+                android:text="@string/icons_password"
+                android:textSize="35dp"
+                android:textColor="@color/colorMotionTheme"/>
+
+            <EditText
+                android:id="@+id/original_password_edittext"
+                android:layout_width="0dp"
+                android:layout_height="43dp"
+                android:layout_weight="8"
+                android:background="@drawable/none_border_background"
+                android:layout_gravity="center_vertical"
+                android:paddingLeft="10dp"
+                android:textSize="20dp"
+                android:hint="原密码"/>
+
+            <ToggleButton
+                android:id="@+id/original_pwd_hide_or_display_togglebutton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_gravity="center_vertical"
+                android:gravity="center"
+                android:background="@android:color/transparent"
+                android:textOff="@string/icons_pwd_hide"
+                android:textOn="@string/icons_pwd_display"
+                android:textSize="35dp"
+                android:textColor="@color/colorMotionTheme"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/new_password_layout"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/none_vertical_border_edittext">
+
+            <TextView
+                android:id="@+id/new_password_icon"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_gravity="center_vertical"
+                android:gravity="center"
+                android:text="@string/icons_password"
+                android:textSize="35dp"
+                android:textColor="@color/colorMotionTheme"/>
+
+            <EditText
+                android:id="@+id/new_password_edittext"
+                android:layout_width="0dp"
+                android:layout_height="43dp"
+                android:layout_weight="8"
+                android:background="@drawable/none_border_background"
+                android:layout_gravity="center_vertical"
+                android:paddingLeft="10dp"
+                android:textSize="20dp"
+                android:hint="新密码"/>
+
+            <ToggleButton
+                android:id="@+id/new_pwd_hide_or_display_togglebutton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_gravity="center_vertical"
+                android:gravity="center"
+                android:background="@android:color/transparent"
+                android:textOff="@string/icons_pwd_hide"
+                android:textOn="@string/icons_pwd_display"
+                android:textSize="35dp"
+                android:textColor="@color/colorMotionTheme"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/new_password_sure_layout"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/none_vertical_border_edittext">
+
+            <TextView
+                android:id="@+id/new_password_sure_icon"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_gravity="center_vertical"
+                android:gravity="center"
+                android:text="@string/icons_password"
+                android:textSize="35dp"
+                android:textColor="@color/colorMotionTheme"/>
+
+            <EditText
+                android:id="@+id/new_password_sure_edittext"
+                android:layout_width="0dp"
+                android:layout_height="43dp"
+                android:layout_weight="8"
+                android:background="@drawable/none_border_background"
+                android:layout_gravity="center_vertical"
+                android:paddingLeft="10dp"
+                android:textSize="20dp"
+                android:hint="确认密码"/>
+
+            <ToggleButton
+                android:id="@+id/new_pwd_sure_hide_or_display_togglebutton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_gravity="center_vertical"
+                android:gravity="center"
+                android:background="@android:color/transparent"
+                android:textOff="@string/icons_pwd_hide"
+                android:textOn="@string/icons_pwd_display"
+                android:textSize="35dp"
+                android:textColor="@color/colorMotionTheme"/>
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/alter_password_preservation_button"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp"
+            android:layout_gravity="center"
+            android:background="@drawable/preservation_button_style"
+            android:text="保存"
+            android:textColor="#fff"
+            android:textSize="23dp"/>
+    </LinearLayout>
+
+</LinearLayout>

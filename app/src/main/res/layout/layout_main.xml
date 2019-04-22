@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_gradient">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="3"
+        android:paddingTop="30dp"
+        android:background="@android:color/transparent">
+
+        <TextView
+            android:id="@+id/search_tips"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:text="蓝牙连接"
+            android:textSize="30dp"
+            android:textColor="@color/colorBtn"/>
+
+        <com.json.motionmonitoring.view.RippleView
+            android:id="@+id/view_ripple"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/img_bluetooth"
+                android:layout_width="200dp"
+                android:layout_height="200dp"
+                android:layout_centerInParent="true"
+                android:src="@mipmap/bluetooth2"/>
+        </com.json.motionmonitoring.view.RippleView>
+    </RelativeLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:paddingLeft="50dp"
+        android:paddingRight="50dp"
+        android:background="@android:color/transparent">
+
+        <Button
+            android:id="@+id/bind_device"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:text="绑定设备"
+            android:textSize="20dp"
+            android:textColor="@color/colorWhite"/>
+
+        <Button
+            android:id="@+id/skip"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@android:color/transparent"
+            android:text="跳过"
+            android:textSize="20dp"
+            android:textColor="@color/colorWhite"/>
+    </LinearLayout>
+</LinearLayout>

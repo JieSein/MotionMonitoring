@@ -19,23 +19,25 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+        <activity android:name=".activity.WelcomeActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".BleScan_Activity"/>
-        <activity android:name=".RegisterActivity" />
-        <activity android:name=".HomeActivity" />
-        <activity android:name=".UserInformation" />
-        <activity android:name=".DeviceInformation" />
-        <activity android:name=".AlterPasswordActivity" />
+        <activity android:name=".activity.LoginActivity"/>
+        <activity android:name=".activity.MainActivity" />
+        <activity android:name=".activity.RegisterActivity" />
+        <activity android:name=".activity.HomeActivity" />
+        <activity android:name=".activity.UserInfoActivity" />
+        <activity android:name=".activity.BindDeviceActivity" />
+        <activity android:name=".activity.AlterPwdActivity" />
 
         <service
             android:name=".services.BluetoothLeService"
             android:enabled="true" />
+
     </application>
 
 </manifest>

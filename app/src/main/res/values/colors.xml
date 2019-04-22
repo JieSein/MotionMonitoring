@@ -3,4 +3,14 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+
+    <color name="colorMotionTheme">#66c480</color>
+
+    <color name="colorMotionThmenClick">#9aecb0</color>
+    
+    <color name="colorNormalcy">#00000000</color>
+
+    <color name="colorWhite">#ffffff</color>
+
+    <color name="colorBtn">#036813</color>
 </resources>
